@@ -1,26 +1,45 @@
+<div align="center">
+
 # 🧬 ParanoidCrypto
 
-**Encriptación de texto basada en secuencias de ADN**
+**DNA-based text encryption web application**
 
-ParanoidCrypto es una aplicación web que transforma texto plano en secuencias de ADN (A, T, G, C) utilizando técnicas de codificación genética y cifrado XOR con SHA-256. Todo el procesamiento ocurre en el navegador del usuario — tus datos nunca tocan un servidor.
+[![License: MIT](https://img.shields.io/badge/License-MIT-00e5ff?style=flat-square)](LICENSE)
+[![Firebase](https://img.shields.io/badge/Firebase-Realtime_Database-FFCA28?style=flat-square&logo=firebase)](https://firebase.google.com)
+[![ORCID](https://img.shields.io/badge/ORCID-0000--0002--8893--526X-A6CE39?style=flat-square&logo=orcid)](https://orcid.org/0000-0002-8893-526X)
 
-![ParanoidCrypt Logo](paranoid.gif)
+![ParanoidCrypto Logo](paranoid.gif)
+
+</div>
 
 ---
 
-## 🌟 Características
+## 🌐 Languages / Idiomas / Idiomas
+
+| Language | Link |
+|----------|------|
+| 🇸 **Español** | [Ir a la sección en español](#-español) |
+| 🇧 **English** | [Go to English section](#-english) |
+| 🇧🇷 **Português** | [Ir para a seção em português](#-português) |
+
+---
+
+<a name="español"></a>
+## 🇪🇸 Español
+
+**ParanoidCrypto** es una aplicación web que transforma texto plano en secuencias de ADN (A, T, G, C) utilizando técnicas de codificación genética y cifrado XOR con SHA-256. Todo el procesamiento ocurre en el navegador del usuario — tus datos nunca tocan un servidor.
+
+### 🌟 Características
 
 - 🔐 **Encriptación 100% client-side**: Tus datos nunca salen de tu navegador
 - 🧬 **Codificación DNA**: Convierte texto en secuencias de nucleótidos (A, T, G, C)
 - 🔑 **Cifrado XOR + SHA-256**: Protección adicional con clave secreta
 - 🌍 **Multilingüe**: Español, Inglés y Portugués
-- 📱 **Responsive**: Funciona en móvil, tablet y desktop
+-  **Responsive**: Funciona en móvil, tablet y desktop
 - 👁️ **Contador de visitas**: Estadísticas en tiempo real con Firebase
 - 🎨 **Diseño cyberpunk**: Interfaz oscura con acentos en azul cian
 
----
-
-## 🚀 Cómo usar
+### 🚀 Cómo usar
 
 1. Abre `index.html` en tu navegador
 2. Escribe tu mensaje secreto en el campo **INPUT**
@@ -29,9 +48,7 @@ ParanoidCrypto es una aplicación web que transforma texto plano en secuencias d
 5. Copia la secuencia de ADN resultante
 6. Para desencriptar, cambia a modo **DECRYPT**, pega la secuencia y usa la misma clave
 
----
-
-## 🔒 Seguridad
+### 🔒 Seguridad
 
 - **SHA-256**: Implementación en JavaScript puro (sin dependencias externas)
 - **XOR Cipher**: Cifrado simétrico con stream generado por SHA-256
@@ -40,18 +57,14 @@ ParanoidCrypto es una aplicación web que transforma texto plano en secuencias d
 
 > ⚠️ **Advertencia**: No usar para datos críticos sin capas adicionales de seguridad.
 
----
-
-## 🛠️ Tecnologías
+### ️ Tecnologías
 
 - HTML5, CSS3, JavaScript (ES6+)
 - **Firebase Realtime Database** (contador de visitas)
 - **Web Crypto API** (SHA-256)
 - **Google Fonts**: JetBrains Mono, Fira Code, Source Code Pro
 
----
-
-## 📦 Instalación local
+### 📦 Instalación local
 
 ```bash
 # Clonar el repositorio
@@ -64,10 +77,3 @@ cd paranoidcrypto
 open index.html       # macOS
 start index.html      # Windows
 xdg-open index.html   # Linux
-
-## 🧬 Mis Proyectos
-
-### ParanoidCrypt
-Encriptación de texto basada en secuencias de ADN.
-
-[![ParanoidCrypto](https://img.shields.io/badge/ParanoidCrypto-DNA_Encryption-00e5ff?style=for-the-badge)](https://github.com/paranoidcrypto/paranoidcrypto)
