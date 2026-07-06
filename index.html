@@ -1,17 +1,14 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>PARANOIDCRYPTO // DNA-based Encryption</title>
 
-<!-- FAVICON -->
-<link rel="icon" type="image/x-icon" href="paranoid.ico" />
+<!-- Favicon -->
 <link rel="icon" type="image/gif" href="paranoid.gif" />
-<link rel="shortcut icon" type="image/gif" href="paranoid.gif" />
-<link rel="apple-touch-icon" href="paranoid.gif" />
 
-<!-- FIREBASE SDK -->
+<!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 
@@ -23,7 +20,6 @@
 <style>
   :root{
     --bg:#05070a;
-    --bg-2:#0a0f14;
     --neon:#00e5ff;
     --neon-2:#00e5ff;
     --mag:#ff2bd6;
@@ -35,332 +31,82 @@
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{background:var(--bg);color:var(--text);font-family:var(--mono);overflow-x:hidden}
   body{min-height:100vh;position:relative}
-
-  .grid-overlay{
-    position:fixed;inset:0;z-index:1;pointer-events:none;
-    background-image:
-      linear-gradient(rgba(0,229,255,.04) 1px,transparent 1px),
-      linear-gradient(90deg,rgba(0,229,255,.04) 1px,transparent 1px);
-    background-size:40px 40px;
-    mask-image:radial-gradient(ellipse at center, #000 40%, transparent 80%);
-  }
-  .vignette{
-    position:fixed;inset:0;z-index:2;pointer-events:none;
-    background:radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,.85) 100%);
-  }
-
   main{position:relative;z-index:5;max-width:1100px;margin:0 auto;padding:40px 24px 80px}
-
-  nav{
-    display:flex;justify-content:space-between;align-items:center;
-    padding:14px 20px;border:1px solid rgba(0,229,255,.2);
-    background:rgba(5,7,10,.6);backdrop-filter:blur(8px);
-    border-radius:2px;gap:12px;flex-wrap:wrap;
-  }
+  nav{display:flex;justify-content:space-between;align-items:center;padding:14px 20px;border:1px solid rgba(0,229,255,.2);background:rgba(5,7,10,.6);border-radius:2px;gap:12px;flex-wrap:wrap}
   .brand{display:flex;align-items:center;gap:12px;font-weight:700;letter-spacing:2px;font-size:14px}
-  .brand .logo{
-    width:28px;height:28px;object-fit:contain;flex-shrink:0;
-    filter:drop-shadow(0 0 8px rgba(0,229,255,.6));
-  }
+  .brand .logo{width:28px;height:28px;object-fit:contain;flex-shrink:0}
   nav ul{display:flex;gap:22px;list-style:none;font-size:13px}
   nav a{color:var(--muted);text-decoration:none;transition:.2s}
   nav a:hover{color:var(--neon)}
-
-  .lang-switch{
-    display:flex;background:rgba(0,0,0,.4);border:1px solid rgba(0,229,255,.2);
-    border-radius:2px;overflow:hidden;
-  }
-  .lang-btn{
-    padding:10px 16px;background:transparent;color:var(--muted);
-    border:none;border-right:1px solid rgba(0,229,255,.1);
-    font-family:var(--mono);font-size:13px;letter-spacing:1px;
-    cursor:pointer;transition:.2s;min-width:44px;font-weight:600;
-  }
+  .lang-switch{display:flex;background:rgba(0,0,0,.4);border:1px solid rgba(0,229,255,.2);border-radius:2px;overflow:hidden}
+  .lang-btn{padding:10px 16px;background:transparent;color:var(--muted);border:none;border-right:1px solid rgba(0,229,255,.1);font-family:var(--mono);font-size:13px;cursor:pointer;transition:.2s;min-width:44px}
   .lang-btn:last-child{border-right:none}
-  .lang-btn.active{background:var(--neon);color:#000;font-weight:700;box-shadow:0 0 15px rgba(0,229,255,.4)}
-  .lang-btn:hover:not(.active){color:var(--neon);background:rgba(0,229,255,.1)}
-
+  .lang-btn.active{background:var(--neon);color:#000;font-weight:700}
+  .lang-btn:hover:not(.active){color:var(--neon)}
   .hero{margin-top:60px;text-align:center}
-  .tag{
-    display:inline-block;font-size:11px;letter-spacing:3px;color:var(--neon-2);
-    border:1px solid rgba(0,229,255,.3);padding:6px 14px;border-radius:2px;
-    background:rgba(0,229,255,.05);
-  }
-  h1{
-    font-size:clamp(32px,8vw,96px);font-weight:900;letter-spacing:4px;
-    margin:22px 0 10px;position:relative;display:inline-block;
-    color:#fff;text-shadow:0 0 20px rgba(0,229,255,.4);
-    word-break:break-word;
-  }
-  h1::before,h1::after{
-    content:attr(data-text);position:absolute;inset:0;pointer-events:none;
-  }
-  h1::before{color:var(--mag);transform:translate(-2px,0);mix-blend-mode:screen;animation:glitch1 3s infinite}
-  h1::after{color:var(--neon-2);transform:translate(2px,0);mix-blend-mode:screen;animation:glitch2 2.4s infinite}
-  @keyframes glitch1{0%,90%,100%{clip-path:inset(0 0 0 0)}92%{clip-path:inset(20% 0 60% 0)}94%{clip-path:inset(70% 0 10% 0)}96%{clip-path:inset(40% 0 40% 0)}}
-  @keyframes glitch2{0%,85%,100%{clip-path:inset(0 0 0 0)}88%{clip-path:inset(60% 0 20% 0)}91%{clip-path:inset(10% 0 70% 0)}93%{clip-path:inset(50% 0 30% 0)}}
-
-  .subtitle{color:var(--muted);font-size:14px;max-width:640px;margin:0 auto;line-height:1.7;padding:0 10px}
+  .tag{display:inline-block;font-size:11px;letter-spacing:3px;color:var(--neon-2);border:1px solid rgba(0,229,255,.3);padding:6px 14px;border-radius:2px;background:rgba(0,229,255,.05)}
+  h1{font-size:clamp(32px,8vw,96px);font-weight:900;letter-spacing:4px;margin:22px 0 10px;position:relative;display:inline-block;color:#fff;text-shadow:0 0 20px rgba(0,229,255,.4)}
+  .subtitle{color:var(--muted);font-size:14px;max-width:640px;margin:0 auto;line-height:1.7}
   .subtitle b{color:var(--neon)}
   .subtitle i{color:var(--mag);font-style:normal}
-
-  .app{
-    margin-top:50px;border:1px solid rgba(0,229,255,.25);
-    background:linear-gradient(180deg,rgba(10,15,20,.9),rgba(5,7,10,.95));
-    border-radius:4px;overflow:hidden;
-    box-shadow:0 0 40px rgba(0,229,255,.08), inset 0 0 60px rgba(0,229,255,.03);
-  }
-  .app-header{
-    display:flex;justify-content:space-between;align-items:center;
-    padding:12px 18px;border-bottom:1px solid rgba(0,229,255,.15);
-    background:rgba(0,229,255,.03);flex-wrap:wrap;gap:8px;
-  }
+  .app{margin-top:50px;border:1px solid rgba(0,229,255,.25);background:linear-gradient(180deg,rgba(10,15,20,.9),rgba(5,7,10,.95));border-radius:4px;overflow:hidden}
+  .app-header{display:flex;justify-content:space-between;padding:12px 18px;border-bottom:1px solid rgba(0,229,255,.15);background:rgba(0,229,255,.03)}
   .app-header .title{font-size:12px;color:var(--neon);letter-spacing:2px}
   .app-header .status{font-size:11px;color:var(--muted)}
   .app-header .status::before{content:"● ";color:var(--neon)}
-
-  .controls{
-    display:grid;grid-template-columns:1fr 1fr auto;gap:12px;
-    padding:16px 18px;border-bottom:1px solid rgba(0,229,255,.1);
-  }
+  .controls{display:grid;grid-template-columns:1fr 1fr auto;gap:12px;padding:16px 18px;border-bottom:1px solid rgba(0,229,255,.1)}
   .mode-switch{display:flex;background:rgba(0,0,0,.4);border:1px solid rgba(0,229,255,.2);border-radius:2px;overflow:hidden}
-  .mode-switch button{
-    flex:1;padding:12px 16px;background:transparent;color:var(--muted);
-    border:none;font-family:var(--mono);font-size:12px;letter-spacing:2px;cursor:pointer;transition:.2s;
-    min-height:44px;
-  }
+  .mode-switch button{flex:1;padding:12px 16px;background:transparent;color:var(--muted);border:none;font-family:var(--mono);font-size:12px;letter-spacing:2px;cursor:pointer;min-height:44px}
   .mode-switch button.active{background:var(--neon);color:#000;font-weight:700}
-  .mode-switch button:hover:not(.active){color:var(--neon)}
-
-  .key-input{
-    background:rgba(0,0,0,.4);border:1px solid rgba(0,229,255,.2);
-    padding:12px 14px;color:var(--text);font-family:var(--mono);font-size:13px;
-    border-radius:2px;outline:none;transition:.2s;min-height:44px;
-  }
-  .key-input:focus{border-color:var(--neon);box-shadow:0 0 12px rgba(0,229,255,.25)}
-  .key-input::placeholder{color:var(--muted)}
-
-  .btn{
-    padding:12px 22px;background:transparent;color:var(--neon);
-    border:1px solid var(--neon);font-family:var(--mono);font-size:12px;
-    letter-spacing:3px;cursor:pointer;border-radius:2px;transition:.2s;
-    position:relative;overflow:hidden;min-height:44px;
-  }
-  .btn:hover{background:var(--neon);color:#000;box-shadow:0 0 20px var(--neon)}
+  .key-input{background:rgba(0,0,0,.4);border:1px solid rgba(0,229,255,.2);padding:12px 14px;color:var(--text);font-family:var(--mono);font-size:13px;border-radius:2px;outline:none;min-height:44px}
+  .key-input:focus{border-color:var(--neon)}
+  .btn{padding:12px 22px;background:transparent;color:var(--neon);border:1px solid var(--neon);font-family:var(--mono);font-size:12px;letter-spacing:3px;cursor:pointer;border-radius:2px;transition:.2s;min-height:44px}
+  .btn:hover{background:var(--neon);color:#000}
   .btn:disabled{opacity:.5;cursor:not-allowed}
   .btn.mag{color:var(--mag);border-color:var(--mag)}
-  .btn.mag:hover{background:var(--mag);color:#000;box-shadow:0 0 20px var(--mag)}
-
+  .btn.mag:hover{background:var(--mag);color:#000}
   .io{display:grid;grid-template-columns:1fr 1fr;gap:0}
-  .io > div{padding:16px 18px;position:relative}
-  .io > div:first-child{border-right:1px solid rgba(0,229,255,.1)}
+  .io>div{padding:16px 18px}
+  .io>div:first-child{border-right:1px solid rgba(0,229,255,.1)}
   .io label{display:block;font-size:11px;color:var(--neon-2);letter-spacing:2px;margin-bottom:8px}
   .io label .hint{color:var(--muted);margin-left:8px}
-  textarea{
-    width:100%;min-height:180px;resize:vertical;background:rgba(0,0,0,.5);
-    border:1px solid rgba(0,229,255,.15);color:var(--text);padding:12px;
-    font-family:var(--mono);font-size:13px;line-height:1.6;border-radius:2px;outline:none;
-  }
-  textarea:focus{border-color:var(--neon);box-shadow:0 0 12px rgba(0,229,255,.2)}
+  textarea{width:100%;min-height:180px;resize:vertical;background:rgba(0,0,0,.5);border:1px solid rgba(0,229,255,.15);color:var(--text);padding:12px;font-family:var(--mono);font-size:13px;line-height:1.6;border-radius:2px;outline:none}
+  textarea:focus{border-color:var(--neon)}
   textarea.dna{color:var(--neon);letter-spacing:1px}
-
-  .footer-actions{
-    display:flex;gap:10px;padding:12px 18px;border-top:1px solid rgba(0,229,255,.1);
-    background:rgba(0,0,0,.3);font-size:11px;color:var(--muted);
-    justify-content:space-between;align-items:center;flex-wrap:wrap;
-  }
+  .footer-actions{display:flex;gap:10px;padding:12px 18px;border-top:1px solid rgba(0,229,255,.1);background:rgba(0,0,0,.3);font-size:11px;color:var(--muted);justify-content:space-between;align-items:center;flex-wrap:wrap}
   .footer-actions .info{display:flex;gap:16px;flex-wrap:wrap}
   .footer-actions .info span b{color:var(--neon)}
-
   .how{margin-top:70px}
   .how h2{font-size:14px;letter-spacing:4px;color:var(--neon);margin-bottom:20px}
-  .how h2::before{content:"> "}
   .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
-  .step{
-    padding:18px;border:1px solid rgba(0,229,255,.15);background:rgba(10,15,20,.6);
-    border-radius:2px;transition:.2s;
-  }
-  .step:hover{border-color:var(--neon);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,229,255,.1)}
+  .step{padding:18px;border:1px solid rgba(0,229,255,.15);background:rgba(10,15,20,.6);border-radius:2px}
   .step .n{font-size:11px;color:var(--mag);letter-spacing:2px;margin-bottom:8px}
   .step h3{font-size:14px;color:#fff;margin-bottom:8px}
   .step p{font-size:12px;color:var(--muted);line-height:1.6}
   .step code{color:var(--neon-2);background:rgba(0,229,255,.08);padding:1px 6px;border-radius:2px}
-
-  .visitor-counter{
-    margin-top:40px;padding:20px;
-    border:1px solid rgba(0,229,255,.2);
-    background:rgba(0,229,255,.03);
-    border-radius:2px;
-    display:flex;flex-direction:column;align-items:center;gap:10px;
-  }
-  .visitor-counter .label{
-    font-size:10px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;
-  }
-  .visitor-counter .count{
-    font-size:32px;font-weight:900;color:var(--neon);
-    text-shadow:0 0 20px rgba(0,229,255,.6);
-    letter-spacing:6px;
-    min-height:40px;
-  }
-  .visitor-counter .meta{
-    font-size:11px;color:var(--muted);letter-spacing:2px;
-  }
-  .visitor-counter .status{
-    font-size:10px;color:var(--muted);letter-spacing:1px;
-  }
-  .visitor-counter .status.online{color:var(--neon)}
-  .visitor-counter .status.error{color:var(--warn)}
-
-  .author-credit{
-    margin-top:14px;
-    padding-top:14px;
-    border-top:1px dashed rgba(0,229,255,.15);
-    font-size:11px;
-    letter-spacing:1.5px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:8px;
-    flex-wrap:wrap;
-  }
-  .orcid-link{
-    color:var(--neon);
-    text-decoration:none;
-    display:inline-flex;
-    align-items:center;
-    gap:5px;
-    transition:.2s;
-    border-bottom:1px solid transparent;
-  }
-  .orcid-link:hover{
-    color:#fff;
-    border-bottom-color:var(--neon);
-    text-shadow:0 0 8px rgba(0,229,255,.6);
-  }
-  .orcid-icon{
-    width:14px;
-    height:14px;
-    vertical-align:middle;
-  }
-
-  footer{
-    margin-top:30px;padding:20px;border-top:1px solid rgba(0,229,255,.1);
-    text-align:center;font-size:11px;color:var(--muted);letter-spacing:2px;
-  }
+  .visitor-counter{margin-top:40px;padding:16px;border:1px solid rgba(0,229,255,.2);background:rgba(0,229,255,.03);border-radius:2px;text-align:center}
+  .visitor-counter .label{font-size:10px;letter-spacing:3px;color:var(--muted)}
+  .visitor-counter .count{font-size:28px;font-weight:900;color:var(--neon);margin:8px 0}
+  .visitor-counter .meta{font-size:11px;color:var(--muted)}
+  .author-credit{margin-top:20px;padding-top:14px;border-top:1px dashed rgba(0,229,255,.2);font-size:11px;color:var(--muted)}
+  .orcid-link{color:var(--neon);text-decoration:none;font-weight:600}
+  .orcid-link:hover{text-decoration:underline}
+  footer{margin-top:30px;padding:20px;border-top:1px solid rgba(0,229,255,.1);text-align:center;font-size:11px;color:var(--muted)}
   footer .warn{color:var(--warn)}
-
-  .toast{
-    position:fixed;bottom:30px;right:30px;padding:12px 20px;
-    background:rgba(0,229,255,.15);border:1px solid var(--neon);color:var(--neon);
-    font-size:12px;letter-spacing:2px;border-radius:2px;z-index:100;
-    transform:translateX(400px);transition:.3s;backdrop-filter:blur(8px);
-    max-width:calc(100vw - 60px);
-  }
+  .toast{position:fixed;bottom:30px;right:30px;padding:12px 20px;background:rgba(0,229,255,.15);border:1px solid var(--neon);color:var(--neon);font-size:12px;letter-spacing:2px;border-radius:2px;z-index:100;transform:translateX(400px);transition:.3s}
   .toast.show{transform:translateX(0)}
   .toast.err{background:rgba(255,43,214,.15);border-color:var(--mag);color:var(--mag)}
 
-  @media (max-width: 1024px) {
-    main{padding:30px 20px 60px}
-    .hero{margin-top:40px}
-    .app{margin-top:40px}
-    .how{margin-top:50px}
-    footer{margin-top:40px}
-  }
-
-  @media (max-width: 768px) {
-    main{padding:20px 16px 50px}
-    nav{padding:12px 16px;gap:10px}
-    .brand{font-size:13px;gap:8px}
-    .brand .logo{width:24px;height:24px}
-    nav ul{gap:16px;font-size:12px;order:3;width:100%;justify-content:center}
-    .lang-switch{order:2}
-    .lang-btn{padding:8px 12px;font-size:12px;min-width:40px}
-    .hero{margin-top:30px}
-    .tag{font-size:10px;letter-spacing:2px;padding:5px 12px}
-    h1{letter-spacing:2px;margin:16px 0 8px}
-    .subtitle{font-size:13px;padding:0 8px}
-    .app{margin-top:30px}
-    .app-header{padding:10px 14px}
-    .app-header .title{font-size:11px}
-    .app-header .status{font-size:10px}
-    .controls{grid-template-columns:1fr;gap:10px;padding:14px}
+  @media(max-width:768px){
     .io{grid-template-columns:1fr}
-    .io > div{padding:14px}
-    .io > div:first-child{border-right:none;border-bottom:1px solid rgba(0,229,255,.1)}
-    .io label{font-size:10px}
-    .io label .hint{display:block;margin-left:0;margin-top:4px}
-    textarea{min-height:150px;font-size:12px}
-    .footer-actions{padding:10px 14px;flex-direction:column;gap:12px;align-items:stretch}
-    .footer-actions .info{justify-content:space-around;gap:12px;font-size:10px}
-    .footer-actions > div:last-child{display:flex;gap:8px}
-    .footer-actions .btn{flex:1;padding:10px 16px;font-size:11px}
-    .how{margin-top:40px}
-    .steps{grid-template-columns:1fr;gap:12px}
-    .step{padding:14px}
-    .step h3{font-size:13px}
-    .step p{font-size:11px}
-    .toast{bottom:20px;right:50%;transform:translateX(50%) translateY(200px);left:auto;font-size:11px;padding:10px 16px}
-    .toast.show{transform:translateX(50%) translateY(0)}
-    footer{margin-top:30px;padding:16px;font-size:10px}
-    .visitor-counter .count{font-size:24px;letter-spacing:4px}
-  }
-
-  @media (max-width: 480px) {
-    main{padding:16px 12px 40px}
-    nav{padding:10px 12px}
-    .brand{font-size:12px;letter-spacing:1px}
-    .brand .logo{width:22px;height:22px}
+    .io>div:first-child{border-right:none;border-bottom:1px solid rgba(0,229,255,.1)}
+    .controls{grid-template-columns:1fr}
+    .hero{margin-top:30px}
     nav ul{gap:12px;font-size:11px}
-    .lang-btn{padding:6px 10px;font-size:11px;min-width:36px}
-    .hero{margin-top:24px}
-    .tag{font-size:9px;letter-spacing:1.5px;padding:4px 10px}
-    h1{letter-spacing:1px;margin:12px 0 6px}
-    .subtitle{font-size:12px;line-height:1.6}
-    .app{margin-top:24px}
-    .controls{padding:12px;gap:8px}
-    .mode-switch button{padding:10px 12px;font-size:11px;letter-spacing:1px}
-    .key-input{padding:10px 12px;font-size:12px}
-    .btn{padding:10px 16px;font-size:11px;letter-spacing:2px}
-    .io > div{padding:12px}
-    textarea{min-height:130px;font-size:11px;padding:10px}
-    .footer-actions .info{font-size:9px;gap:8px}
-    .footer-actions .btn{padding:8px 12px;font-size:10px}
-    .how{margin-top:30px}
-    .step{padding:12px}
-    .step .n{font-size:10px}
-    .step h3{font-size:12px}
-    .step p{font-size:10px}
-    footer{margin-top:24px;padding:14px 12px;font-size:9px}
-    .visitor-counter .count{font-size:20px}
-  }
-
-  @media (max-width: 360px) {
-    .brand{font-size:11px}
-    .brand .logo{width:20px;height:20px}
-    nav ul{gap:10px;font-size:10px}
-    .lang-btn{padding:5px 8px;font-size:10px;min-width:32px}
-    h1{letter-spacing:0.5px}
-    .subtitle{font-size:11px}
-    .mode-switch button{font-size:10px;letter-spacing:0.5px}
-    .key-input{font-size:11px}
-    .btn{font-size:10px;letter-spacing:1.5px}
-    textarea{font-size:10px}
-  }
-
-  @media (max-height: 500px) and (orientation: landscape) {
-    .hero{margin-top:20px}
-    h1{font-size:clamp(28px,6vw,48px);margin:10px 0 6px}
-    .subtitle{font-size:12px}
-    .app{margin-top:20px}
-    textarea{min-height:120px}
-    .how{margin-top:30px}
   }
 </style>
 </head>
 <body>
-
-<div class="grid-overlay"></div>
-<div class="vignette"></div>
 
 <main>
   <nav>
@@ -385,7 +131,7 @@
     <h1 data-text="PARANOIDCRYPTO">PARANOIDCRYPTO</h1>
     <p class="subtitle" data-i18n="hero.subtitle">
       Codifica tus mensajes en <b>secuencias de ADN</b> (A, T, G, C).
-      Transforma texto plano en una <i>hebra genética</i> indescifrable sin la clave correcta.
+      Transforma texto plano en una <i>hebra genética</i> indescifrable américa la clave correcta.
       Porque hasta el silencio puede tener forma de vida.
     </p>
   </section>
@@ -395,21 +141,19 @@
       <span class="title" data-i18n="app.title">[ TERMINAL // DNA_ENCODER ]</span>
       <span class="status" data-i18n="app.status">SYSTEM ONLINE</span>
     </div>
-
     <div class="controls">
       <div class="mode-switch">
-        <button id="mode-enc" class="active" data-i18n="app.encrypt">ENCRYPT</button>
+        <button id="mode-enc" class="active" data-i18n="app.encrypt">ENCRYPT</button>00
         <button id="mode-dec" data-i18n="app.decrypt">DECRYPT</button>
       </div>
       <input type="text" id="key" class="key-input" data-i18n-placeholder="app.keyPlaceholder" placeholder="CLAVE SECRETA (opcional)" />
       <button class="btn" id="run" data-i18n="app.execute">▶ EXECUTE</button>
     </div>
-
     <div class="io">
       <div>
         <label>
           <span data-i18n="app.input">INPUT</span>
-          <span class="hint" id="input-hint" data-i18n="app.inputHint">// texto plano o secuencia ADN</span>
+          <span class="hint" data-i18n="app.inputHint">// texto plano o secuencia ADN</span>
         </label>
         <textarea id="input" data-i18n-placeholder="app.inputPlaceholder" placeholder="Escribe aquí tu mensaje secreto..."></textarea>
       </div>
@@ -421,7 +165,6 @@
         <textarea id="output" class="dna" readonly data-i18n-placeholder="app.outputPlaceholder" placeholder="El resultado aparecerá aquí..."></textarea>
       </div>
     </div>
-
     <div class="footer-actions">
       <div class="info">
         <span><span data-i18n="app.bytes">BYTES</span>: <b id="stat-bytes">0</b></span>
@@ -461,37 +204,31 @@
     </div>
   </section>
 
-  <div class="visitor-counter">
+  <div class="visitor-counter" id="visitor-counter">
     <div class="label" data-i18n="counter.label">VISITAS TOTALES</div>
     <div class="count" id="visit-count">...</div>
     <div class="meta">
       <span data-i18n="counter.unique">Visitantes únicos</span>: <span id="unique-visitors">...</span>
     </div>
-    <div class="status" id="counter-status" data-i18n="counter.connecting">CONECTANDO...</div>
+    <div class="status" id="visit-status" data-i18n="counter.connecting">CONECTANDO...</div>
   </div>
 
   <footer id="about">
     <p>PARANOIDCRYPTO // <span class="warn" data-i18n="footer.warn">NO USE FOR CRITICAL DATA WITHOUT ADDITIONAL LAYERS</span></p>
     <p style="margin-top:6px" data-i18n="footer.credit">BUILT WITH DNA, PARANOIA &amp; CAFFEINE · 2026</p>
-    <p class="author-credit">
+    <div class="author-credit">
       <span data-i18n="footer.author">App creada por</span>
       <a href="https://orcid.org/0000-0002-8893-526X" target="_blank" rel="noopener noreferrer" class="orcid-link">
-        Paris Lavin
-        <svg class="orcid-icon" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
-          <path fill="#A6CE39" d="M256 128c0 70.7-57.3 128-128 128S0 198.7 0 128 57.3 0 128 0s128 57.3 128 128z"/>
-          <path fill="#FFF" d="M86.3 186.2H70.9V102.4h15.4v83.8zM78.6 78.8c-5.3 0-9.6-4.3-9.6-9.6s4.3-9.6 9.6-9.6 9.6 4.3 9.6 9.6-4.3 9.6-9.6 9.6zM185.1 186.2h-15.3v-40.2c0-11.5-4.1-19.3-14.4-19.3-7.9 0-12.5 5.3-14.6 10.4-.7 1.8-.9 4.4-.9 6.9v42.2h-15.3V102.4h15.3v11.7c4.9-7.6 12.5-13.6 24.6-13.6 17.9 0 31.5 11.7 31.5 36.8v48.9h-10.9z"/>
-        </svg>
+        Paris Lavin <img src="https://info.orcid.org/wp-content/uploads/2019/11/orcid_16x16.png" alt="ORCID" style="width:14px;height:14px;vertical-align:middle;margin-left:4px">
       </a>
-    </p>
+    </div>
   </footer>
 </main>
 
 <div class="toast" id="toast">OK</div>
 
 <script>
-/* ============================================================
-   CONFIGURACIÓN DE FIREBASE
-   ============================================================ */
+/* ===================== FIREBASE CONFIG ===================== */
 const firebaseConfig = {
   apiKey: "AIzaSyCKInVSZqYg-lnQ8PLbp_eG4ru85xoD7-M",
   authDomain: "paranoidcrypto.firebaseapp.com",
@@ -502,144 +239,106 @@ const firebaseConfig = {
   appId: "1:419179750527:web:f0339785f7e902c175cb4a"
 };
 
-firebase.initializeApp(firebaseConfig);
-const database = firebase.database();
+let app, database;
+try {
+  app = firebase.initializeApp(firebaseConfig);
+  database = firebase.database();
+  console.log("Firebase conectado");
+} catch(e) {
+  console.error("Error Firebase:", e);
+}
 
-/* ============================================================
-   TRADUCCIONES
-   ============================================================ */
+/* ===================== TRADUCCIONES ===================== */
 const translations = {
   es: {
-    "nav.app": "APP", "nav.how": "CÓMO", "nav.about": "ACERCA",
-    "hero.tag": "// PROTOCOLO DE BIO-ENCRIPTACIÓN v1.0",
-    "hero.subtitle": "Codifica tus mensajes en <b>secuencias de ADN</b> (A, T, G, C). Transforma texto plano en una <i>hebra genética</i> indescifrable sin la clave correcta. Porque hasta el silencio puede tener forma de vida.",
-    "app.title": "[ TERMINAL // DNA_ENCODER ]",
-    "app.status": "SISTEMA EN LÍNEA",
-    "app.encrypt": "ENCRIPTAR", "app.decrypt": "DESENCRIPTAR",
-    "app.keyPlaceholder": "CLAVE SECRETA (opcional)",
-    "app.execute": "▶ EJECUTAR",
-    "app.input": "ENTRADA", "app.inputHint": "// texto plano o secuencia ADN",
-    "app.inputPlaceholder": "Escribe aquí tu mensaje secreto...",
-    "app.inputPlaceholderDecrypt": "Pega aquí la secuencia de ADN (ATGC)...",
-    "app.output": "SALIDA", "app.outputHint": "// resultado",
-    "app.outputPlaceholder": "El resultado aparecerá aquí...",
-    "app.bytes": "BYTES", "app.nucleotides": "NUCLEÓTIDOS", "app.ratio": "RATIO",
-    "app.copy": "COPIAR", "app.clear": "LIMPIAR",
-    "how.title": "CÓMO FUNCIONA",
-    "how.s1.title": "UTF-8 → Binario",
-    "how.s1.desc": "El texto se convierte a bytes UTF-8 y luego a una cadena de bits.",
-    "how.s2.title": "XOR con Clave",
-    "how.s2.desc": "Si defines una clave, se aplica un XOR cifrado usando <code>SHA-256</code> como stream.",
-    "how.s3.title": "Mapeo a Nucleótidos",
-    "how.s3.desc": "Cada 2 bits se traducen a una base: <code>00→A</code>, <code>01→T</code>, <code>10→G</code>, <code>11→C</code>.",
-    "how.s4.title": "Hebra Resultante",
-    "how.s4.desc": "Obtienes una secuencia de ADN que puede revertirse con la misma clave.",
-    "footer.warn": "NO USAR PARA DATOS CRÍTICOS SIN CAPAS ADICIONALES",
-    "footer.credit": "CONSTRUIDO CON ADN, PARANOIA Y CAFEÍNA · 2026",
-    "footer.author": "App creada por",
-    "toast.encrypted": "ENCRIPTADO → ADN",
-    "toast.decrypted": "DESENCRIPTADO → TEXTO",
-    "toast.emptyInput": "ENTRADA VACÍA",
-    "toast.copied": "COPIADO AL PORTAPAPELES",
-    "toast.nothingToCopy": "NADA QUE COPIAR",
-    "toast.error": "ERROR: ",
-    "err.shortSeq": "Secuencia demasiado corta",
-    "err.incompleteSeq": "Secuencia incompleta",
-    "err.invalidDNA": "Caracteres inválidos en la secuencia ADN",
-    "docTitle": "PARANOIDCRYPTO // Encriptación basada en ADN",
-    "counter.label": "VISITAS TOTALES",
-    "counter.unique": "Visitantes únicos",
-    "counter.connecting": "CONECTANDO...",
-    "counter.online": "● SINCRONIZADO",
-    "counter.error": "✗ ERROR DE CONEXIÓN"
+    "nav.app":"APP","nav.how":"CÓMO","nav.about":"ACERCA",
+    "hero.tag":"// PROTOCOLO DE BIO-ENCRIPTACIÓN v1.0",
+    "hero.subtitle":"Codifica tus mensajes en <b>secuencias de ADN</b> (A, T, G, C). Transforma texto plano en una <i>hebra genética</i> indescifrable sin la clave correcta. Porque hasta el silencio puede tener forma de vida.",
+    "app.title":"[ TERMINAL // DNA_ENCODER ]","app.status":"SISTEMA EN LÍNEA",
+    "app.encrypt":"ENCRIPTAR","app.decrypt":"DESENCRIPTAR",
+    "app.keyPlaceholder":"CLAVE SECRETA (opcional)","app.execute":"▶ EJECUTAR",
+    "app.input":"ENTRADA","app.inputHint":"// texto plano o secuencia ADN",
+    "app.inputPlaceholder":"Escribe aquí tu mensaje secreto...",
+    "app.inputPlaceholderDecrypt":"Pega aquí la secuencia de ADN (ATGC)...",
+    "app.output":"SALIDA","app.outputHint":"// resultado",
+    "app.outputPlaceholder":"El resultado aparecerá aquí...",
+    "app.bytes":"BYTES","app.nucleotides":"NUCLEÓTIDOS","app.ratio":"RATIO",
+    "app.copy":"COPIAR","app.clear":"LIMPIAR",
+    "how.title":"CÓMO FUNCIONA",
+    "how.s1.title":"UTF-8 → Binario","how.s1.desc":"El texto se convierte a bytes UTF-8 y luego a una cadena de bits.",
+    "how.s2.title":"XOR con Clave","how.s2.desc":"Si defines una clave, se aplica un XOR cifrado usando <code>SHA-256</code> como stream.",
+    "how.s3.title":"Mapeo a Nucleótidos","how.s3.desc":"Cada 2 bits se traducen a una base: <code>00→A</code>, <code>01→T</code>, <code>10→G</code>, <code>11→C</code>.",
+    "how.s4.title":"Hebra Resultante","how.s4.desc":"Obtienes una secuencia de ADN que puede revertirse con la misma clave.",
+    "footer.warn":"NO USAR PARA DATOS CRÍTICOS SIN CAPAS ADICIONALES",
+    "footer.credit":"CONSTRUIDO CON ADN, PARANOIA Y CAFEÍNA · 2026",
+    "footer.author":"App creada por",
+    "counter.label":"VISITAS TOTALES","counter.unique":"Visitantes únicos",
+    "counter.connecting":"CONECTANDO...","counter.online":"● SINCRONIZADO","counter.error":"✗ ERROR",
+    "toast.encrypted":"ENCRIPTADO → ADN","toast.decrypted":"DESENCRIPTADO → TEXTO",
+    "toast.emptyInput":"ENTRADA VACÍA","toast.copied":"COPIADO","toast.nothingToCopy":"NADA QUE COPIAR",
+    "toast.error":"ERROR: ",
+    "err.shortSeq":"Secuencia demasiado corta","err.incompleteSeq":"Secuencia incompleta","err.invalidDNA":"Caracteres inválidos",
+    "docTitle":"PARANOIDCRYPTO // Encriptación basada en ADN"
   },
   en: {
-    "nav.app": "APP", "nav.how": "HOW", "nav.about": "ABOUT",
-    "hero.tag": "// BIO-ENCRYPTION PROTOCOL v1.0",
-    "hero.subtitle": "Encode your messages into <b>DNA sequences</b> (A, T, G, C). Turn plain text into an undecipherable <i>genetic strand</i> without the right key. Because even silence can take the shape of life.",
-    "app.title": "[ TERMINAL // DNA_ENCODER ]",
-    "app.status": "SYSTEM ONLINE",
-    "app.encrypt": "ENCRYPT", "app.decrypt": "DECRYPT",
-    "app.keyPlaceholder": "SECRET KEY (optional)",
-    "app.execute": "▶ EXECUTE",
-    "app.input": "INPUT", "app.inputHint": "// plain text or DNA sequence",
-    "app.inputPlaceholder": "Type your secret message here...",
-    "app.inputPlaceholderDecrypt": "Paste the DNA sequence here (ATGC)...",
-    "app.output": "OUTPUT", "app.outputHint": "// result",
-    "app.outputPlaceholder": "The result will appear here...",
-    "app.bytes": "BYTES", "app.nucleotides": "NUCLEOTIDES", "app.ratio": "RATIO",
-    "app.copy": "COPY", "app.clear": "CLEAR",
-    "how.title": "HOW IT WORKS",
-    "how.s1.title": "UTF-8 → Binary",
-    "how.s1.desc": "Text is converted to UTF-8 bytes and then into a bit string.",
-    "how.s2.title": "XOR with Key",
-    "how.s2.desc": "If you provide a key, a ciphered XOR is applied using <code>SHA-256</code> as a stream.",
-    "how.s3.title": "Nucleotide Mapping",
-    "how.s3.desc": "Every 2 bits are translated into a base: <code>00→A</code>, <code>01→T</code>, <code>10→G</code>, <code>11→C</code>.",
-    "how.s4.title": "Resulting Strand",
-    "how.s4.desc": "You get a DNA sequence that can be reversed with the same key.",
-    "footer.warn": "DO NOT USE FOR CRITICAL DATA WITHOUT ADDITIONAL LAYERS",
-    "footer.credit": "BUILT WITH DNA, PARANOIA &amp; CAFFEINE · 2026",
-    "footer.author": "App created by",
-    "toast.encrypted": "ENCRYPTED → DNA",
-    "toast.decrypted": "DECRYPTED → TEXT",
-    "toast.emptyInput": "EMPTY INPUT",
-    "toast.copied": "COPIED TO CLIPBOARD",
-    "toast.nothingToCopy": "NOTHING TO COPY",
-    "toast.error": "ERROR: ",
-    "err.shortSeq": "Sequence too short",
-    "err.incompleteSeq": "Incomplete sequence",
-    "err.invalidDNA": "Invalid characters in DNA sequence",
-    "docTitle": "PARANOIDCRYPTO // DNA-based Encryption",
-    "counter.label": "TOTAL VISITS",
-    "counter.unique": "Unique visitors",
-    "counter.connecting": "CONNECTING...",
-    "counter.online": "● SYNCED",
-    "counter.error": "✗ CONNECTION ERROR"
+    "nav.app":"APP","nav.how":"HOW","nav.about":"ABOUT",
+    "hero.tag":"// BIO-ENCRYPTION PROTOCOL v1.0",
+    "hero.subtitle":"Encode your messages into <b>DNA sequences</b> (A, T, G, C). Turn plain text into an undecipherable <i>genetic strand</i> without the right key. Because even silence can take the shape of life.",
+    "app.title":"[ TERMINAL // DNA_ENCODER ]","app.status":"SYSTEM ONLINE",
+    "app.encrypt":"ENCRYPT","app.decrypt":"DECRYPT",
+    "app.keyPlaceholder":"SECRET KEY (optional)","app.execute":"▶ EXECUTE",
+    "app.input":"INPUT","app.inputHint":"// plain text or DNA sequence",
+    "app.inputPlaceholder":"Type your secret message here...",
+    "app.inputPlaceholderDecrypt":"Paste the DNA sequence here (ATGC)...",
+    "app.output":"OUTPUT","app.outputHint":"// result",
+    "app.outputPlaceholder":"The result will appear here...",
+    "app.bytes":"BYTES","app.nucleotides":"NUCLEOTIDES","app.ratio":"RATIO",
+    "app.copy":"COPY","app.clear":"CLEAR",
+    "how.title":"HOW IT WORKS",
+    "how.s1.title":"UTF-8 → Binary","how.s1.desc":"Text is converted to UTF-8 bytes and then into a bit string.",
+    "how.s2.title":"XOR with Key","how.s2.desc":"If you provide a key, a ciphered XOR is applied using <code>SHA-256</code> as a stream.",
+    "how.s3.title":"Nucleotide Mapping","how.s3.desc":"Every 2 bits are translated into a base: <code>00→A</code>, <code>01→T</code>, <code>10→G</code>, <code>11→C</code>.",
+    "how.s4.title":"Resulting Strand","how.s4.desc":"You get a DNA sequence that can be reversed with the same key.",
+    "footer.warn":"DO NOT USE FOR CRITICAL DATA WITHOUT ADDITIONAL LAYERS",
+    "footer.credit":"BUILT WITH DNA, PARANOIA & CAFFEINE · 2026",
+    "footer.author":"App created by",
+    "counter.label":"TOTAL VISITS","counter.unique":"Unique visitors",
+    "counter.connecting":"CONNECTING...","counter.online":"● SYNCED","counter.error":"✗ ERROR",
+    "toast.encrypted":"ENCRYPTED → DNA","toast.decrypted":"DECRYPTED → TEXT",
+    "toast.emptyInput":"EMPTY INPUT","toast.copied":"COPIED","toast.nothingToCopy":"NOTHING TO COPY",
+    "toast.error":"ERROR: ",
+    "err.shortSeq":"Sequence too short","err.incompleteSeq":"Incomplete sequence","err.invalidDNA":"Invalid characters",
+    "docTitle":"PARANOIDCRYPTO // DNA-based Encryption"
   },
   pt: {
-    "nav.app": "APP", "nav.how": "COMO", "nav.about": "SOBRE",
-    "hero.tag": "// PROTOCOLO DE BIO-CRIPTOGRAFIA v1.0",
-    "hero.subtitle": "Codifique suas mensagens em <b>sequências de DNA</b> (A, T, G, C). Transforme texto plano em um <i>fio genético</i> indecifrável sem a chave correta. Porque até o silêncio pode ter forma de vida.",
-    "app.title": "[ TERMINAL // DNA_ENCODER ]",
-    "app.status": "SISTEMA ONLINE",
-    "app.encrypt": "CRIPTOGRAFAR", "app.decrypt": "DECRIPTOGRAFAR",
-    "app.keyPlaceholder": "CHAVE SECRETA (opcional)",
-    "app.execute": "▶ EXECUTAR",
-    "app.input": "ENTRADA", "app.inputHint": "// texto plano ou sequência DNA",
-    "app.inputPlaceholder": "Digite sua mensagem secreta aqui...",
-    "app.inputPlaceholderDecrypt": "Cole a sequência de DNA aqui (ATGC)...",
-    "app.output": "SAÍDA", "app.outputHint": "// resultado",
-    "app.outputPlaceholder": "O resultado aparecerá aqui...",
-    "app.bytes": "BYTES", "app.nucleotides": "NUCLEOTÍDEOS", "app.ratio": "RAZÃO",
-    "app.copy": "COPIAR", "app.clear": "LIMPAR",
-    "how.title": "COMO FUNCIONA",
-    "how.s1.title": "UTF-8 → Binário",
-    "how.s1.desc": "O texto é convertido em bytes UTF-8 e depois em uma cadeia de bits.",
-    "how.s2.title": "XOR com Chave",
-    "how.s2.desc": "Se você definir uma chave, aplica-se um XOR cifrado usando <code>SHA-256</code> como fluxo.",
-    "how.s3.title": "Mapeamento para Nucleotídeos",
-    "how.s3.desc": "Cada 2 bits são traduzidos em uma base: <code>00→A</code>, <code>01→T</code>, <code>10→G</code>, <code>11→C</code>.",
-    "how.s4.title": "Fio Resultante",
-    "how.s4.desc": "Você obtém una sequência de DNA que pode ser revertida com a mesma chave.",
-    "footer.warn": "NÃO USE PARA DADOS CRÍTICOS SEM CAMADAS ADICIONAIS",
-    "footer.credit": "CONSTRUÍDO CON DNA, PARANOIA E CAFEÍNA · 2026",
-    "footer.author": "App criada por",
-    "toast.encrypted": "CRIPTOGRAFADO → DNA",
-    "toast.decrypted": "DECRIPTOGRAFADO → TEXTO",
-    "toast.emptyInput": "ENTRADA VAZIA",
-    "toast.copied": "COPIADO PARA A ÁREA DE TRANSFERÊNCIA",
-    "toast.nothingToCopy": "NADA PARA COPIAR",
-    "toast.error": "ERRO: ",
-    "err.shortSeq": "Sequência muito curta",
-    "err.incompleteSeq": "Sequência incompleta",
-    "err.invalidDNA": "Caracteres inválidos na sequência DNA",
-    "docTitle": "PARANOIDCRYPTO // Criptografia baseada em DNA",
-    "counter.label": "VISITAS TOTAIS",
-    "counter.unique": "Visitantes únicos",
-    "counter.connecting": "CONECTANDO...",
-    "counter.online": "● SINCRONIZADO",
-    "counter.error": "✗ ERRO DE CONEXÃO"
+    "nav.app":"APP","nav.how":"COMO","nav.about":"SOBRE",
+    "hero.tag":"// PROTOCOLO DE BIO-CRIPTOGRAFIA v1.0",
+    "hero.subtitle":"Codifique suas mensagens em <b>sequências de DNA</b> (A, T, G, C). Transforme texto plano em um <i>fio genético</i> indecifrável sem a chave correta. Porque até o silêncio pode ter forma de vida.",
+    "app.title":"[ TERMINAL // DNA_ENCODER ]","app.status":"SISTEMA ONLINE",
+    "app.encrypt":"CRIPTOGRAFAR","app.decrypt":"DECRIPTOGRAFAR",
+    "app.keyPlaceholder":"CHAVE SECRETA (opcional)","app.execute":"▶ EXECUTAR",
+    "app.input":"ENTRADA","app.inputHint":"// texto plano ou sequência DNA",
+    "app.inputPlaceholder":"Digite sua mensagem secreta aqui...",
+    "app.inputPlaceholderDecrypt":"Cole a sequência de DNA aqui (u ATGC)...",
+    "app.output":"SAÍDA","app.outputHint":"// resultado",
+    "app.outputPlaceholder":"O resultado aparecerá aqui...",
+    "app.bytes":"BYTES","app.nucleotides":"NUCLEOTÍDEOS","app.ratio":"RAZÃO",
+    "app.copy":"COPIAR","app.clear":"LIMPAR",
+    "how.title":"COMO FUNCIONA",
+    "how.s1.title":"UTF-8 → Binário","how.s1.desc":"O texto é convertido em bytes UTF-8 e depois em uma cadeia de bits.",
+    "how.s2.title":"XOR com Chave","how.s2.desc":"Se você definir uma chave, aplica-se um XOR cifrado usando <code>SHA-256</code> como fluxo.",
+    "how.s3.title":"Mapeamento para Nucleotídeos","how.s3.desc":"Cada 2 bits são traduzidos em uma base: <code>00→A</code>, <code>01→T</code>, <code>10→G</code>, <code>11→C</code>.",
+    "how.s4.title":"Fio Resultante","how.s4.desc":"Você obtém uma sequência de DNA que pode ser revertida com a mesma chave.",
+    "footer.warn":"NÃO USE PARA DADOS CRÍTICOS SEM CAMADAS ADICIONAIS",
+    "footer.credit":"CONSTRUÍDO COM DNA, PARANOIA E CAFEÍNA · 2026",
+    "footer.author":"App criada por",
+    "counter.label":"VISITAS TOTAIS","counter.unique":"Visitantes únicos",
+    "counter.connecting":"CONECTANDO...","counter.online":"● SINCRONIZADO","counter.error":"✗ ERRO",
+    "toast.encrypted":"CRIPTOGRAFADO → DNA","toast.decrypted":"DECRIPTOGRAFADO → TEXTO",
+    "toast.emptyInput":"ENTRADA VAZIA","toast.copied":"COPIADO","toast.nothingToCopy":"NADA PARA COPIAR",
+    "toast.error":"ERRO: ",
+    "err.shortSeq":"Sequência muito curta","err.incompleteSeq":"Sequência incompleta","err.invalidDNA":"Caracteres inválidos",
+    "docTitle":"PARANOIDCRYPTO // Criptografia baseada em DNA"
   }
 };
 
@@ -654,33 +353,25 @@ function applyLanguage(lang) {
   if (!translations[lang]) return;
   currentLang = lang;
   try { localStorage.setItem('paranoidcrypt_lang', lang); } catch(e) {}
-
-  document.querySelectorAll('.lang-btn').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.lang === lang);
-  });
-
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.dataset.lang === lang));
   document.querySelectorAll('[data-i18n]').forEach(el => {
-    const key = el.getAttribute('data-i18n');
-    const text = translations[lang][key];
-    if (text !== undefined) el.innerHTML = text;
+    const text = translations[lang][el.getAttribute('data-i18n')];
+    if (text) el.innerHTML = text;
   });
-
   document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
-    const key = el.getAttribute('data-i18n-placeholder');
-    const text = translations[lang][key];
-    if (text !== undefined) el.setAttribute('placeholder', text);
+    const text = translations[lang][el.getAttribute('data-i18n-placeholder')];
+    if (text) el.setAttribute('placeholder', text);
   });
-
   updateInputPlaceholder();
   document.title = translations[lang].docTitle;
   document.documentElement.lang = lang;
 }
 
 function updateInputPlaceholder() {
-  const input = document.getElementById('input');
-  if (!input) return;
+  const inp = document.getElementById('input');
+  if (!inp) return;
   const key = currentMode === 'encrypt' ? 'app.inputPlaceholder' : 'app.inputPlaceholderDecrypt';
-  input.setAttribute('placeholder', t(key));
+  inp.setAttribute('placeholder', t(key));
 }
 
 function detectLanguage() {
@@ -688,68 +379,53 @@ function detectLanguage() {
     const saved = localStorage.getItem('paranoidcrypt_lang');
     if (saved && translations[saved]) return saved;
   } catch(e) {}
-  const navLang = (navigator.language || 'es').toLowerCase();
-  if (navLang.startsWith('pt')) return 'pt';
-  if (navLang.startsWith('en')) return 'en';
+  const n = (navigator.language || 'es').toLowerCase();
+  if (n.startsWith('pt')) return 'pt';
+  if (n.startsWith('en')) return 'en';
   return 'es';
 }
 
-function initVisitorCounter() {
+/* ===================== CONTADOR FIREBASE ===================== */
+function initCounter() {
   const countEl = document.getElementById('visit-count');
   const uniqueEl = document.getElementById('unique-visitors');
-  const statusEl = document.getElementById('counter-status');
-  
-  if (!countEl || !uniqueEl || !statusEl) return;
-  
-  let visitorId = localStorage.getItem('pc_visitor_id');
-  if (!visitorId) {
-    visitorId = 'v_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-    localStorage.setItem('pc_visitor_id', visitorId);
+  const statusEl = document.getElementById('visit-status');
+  if (!countEl || !database) return;
+
+  let vid = localStorage.getItem('pc_vid');
+  if (!vid) {
+    vid = 'v' + Date.now() + '_' + Math.random().toString(36).substr(2, 8);
+    localStorage.setItem('pc_vid', vid);
   }
-  
+
   const visitsRef = database.ref('site_stats/total_visits');
   const visitorsRef = database.ref('site_stats/visitors');
-  const visitorRef = visitorsRef.child(visitorId);
-  
-  visitsRef.transaction(function(current) {
-    return (current || 0) + 1;
-  }).then(function(result) {
-    if (result.committed) {
-      countEl.textContent = (result.snapshot.val() || 0).toLocaleString();
+
+  visitsRef.transaction(cur => (cur || 0) + 1).then(r => {
+    if (r.committed) {
+      countEl.textContent = r.snapshot.val().toLocaleString();
     }
-  }).catch(function(error) {
-    console.error('Error visitas:', error);
+  }).catch(() => {
     countEl.textContent = '0';
     statusEl.textContent = t('counter.error');
-    statusEl.className = 'status error';
   });
-  
-  visitorRef.set({
-    first_visit: firebase.database.ServerValue.TIMESTAMP,
-    last_visit: firebase.database.ServerValue.TIMESTAMP
-  }).then(function() {
+
+  visitorsRef.child(vid).set({ts: Date.now()}).then(() => {
     return visitorsRef.once('value');
-  }).then(function(snapshot) {
-    const count = snapshot.numChildren();
-    uniqueEl.textContent = count.toLocaleString();
+  }).then(snap => {
+    uniqueEl.textContent = snap.numChildren().toLocaleString();
     statusEl.textContent = t('counter.online');
-    statusEl.className = 'status online';
-  }).catch(function(error) {
-    console.error('Error visitantes:', error);
+  }).catch(() => {
     uniqueEl.textContent = '0';
-    statusEl.textContent = t('counter.error');
-    statusEl.className = 'status error';
   });
-  
-  visitsRef.on('value', function(snapshot) {
-    const val = snapshot.val();
-    if (val !== null) {
-      countEl.textContent = val.toLocaleString();
-    }
+
+  visitsRef.on('value', snap => {
+    if (snap.val() !== null) countEl.textContent = snap.val().toLocaleString();
   });
 }
 
-function sha256Bytes(messageBytes) {
+/* ===================== SHA-256 PURO ===================== */
+function sha256Bytes(msg) {
   const K = new Uint32Array([
     0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,
     0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,
@@ -760,292 +436,141 @@ function sha256Bytes(messageBytes) {
     0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,
     0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2
   ]);
-
-  let H0 = 0x6a09e667, H1 = 0xbb67ae85, H2 = 0x3c6ef372, H3 = 0xa54ff53a;
-  let H4 = 0x510e527f, H5 = 0x9b05688c, H6 = 0x1f83d9ab, H7 = 0x5be0cd19;
-
-  const msgLen = messageBytes.length;
-  const bitLen = msgLen * 8;
-  const padLen = (56 - (msgLen + 1) % 64 + 64) % 64;
-  const totalLen = msgLen + 1 + padLen + 8;
-  const padded = new Uint8Array(totalLen);
-  padded.set(messageBytes);
-  padded[msgLen] = 0x80;
-  const view = new DataView(padded.buffer);
-  view.setUint32(totalLen - 4, bitLen, false);
-
-  function rotr(n, x) { return (x >>> n) | (x << (32 - n)); }
-  function ch(x, y, z) { return (x & y) ^ (~x & z); }
-  function maj(x, y, z) { return (x & y) ^ (x & z) ^ (y & z); }
-  function sigma0(x) { return rotr(2, x) ^ rotr(13, x) ^ rotr(22, x); }
-  function sigma1(x) { return rotr(6, x) ^ rotr(11, x) ^ rotr(25, x); }
-  function gamma0(x) { return rotr(7, x) ^ rotr(18, x) ^ (x >>> 3); }
-  function gamma1(x) { return rotr(17, x) ^ rotr(19, x) ^ (x >>> 10); }
-
-  const W = new Uint32Array(64);
-  for (let offset = 0; offset < totalLen; offset += 64) {
-    for (let i = 0; i < 16; i++) {
-      W[i] = view.getUint32(offset + i * 4, false);
+  let h0=0x6a09e667,h1=0xbb67ae85,h2=0x3c6ef372,h3=0xa54ff53a;
+  let h4=0x510e527f,h5=0x9b05688c,h6=0x1f83d9ab,h7=0x5be0cd19;
+  const ml=msg.length, bl=ml*8, pad=(56-(ml+1)%64+64)%64;
+  const total=ml+1+pad+8;
+  const padded=new Uint8Array(total);
+  padded.set(msg); padded[ml]=0x80;
+  const dv=new DataView(padded.buffer);
+  dv.setUint32(total-4,bl,false);
+  const rotr=(n,x)=>(x>>>n)|(x<<(32-n));
+  const ch=(x,y,z)=>(x&y)^(~x&z);
+  const maj=(x,y,z)=>(x&y)^(x&z)^(y&z);
+  const s0=x=>rotr(2,x)^rotr(13,x)^rotr(22,x);
+  const s1=x=>rotr(6,x)^rotr(11,x)^rotr(25,x);
+  const g0=x=>rotr(7,x)^rotr(18,x)^(x>>>3);
+  const g1=x=>rotr(17,x)^rotr(19,x)^(x>>>10);
+  const W=new Uint32Array(64);
+  for(let off=0;off<total;off+=64){
+    for(let i=0;i<16;i++) W[i]=dv.getUint32(off+i*4,false);
+    for(let i=16;i<64;i++) W[i]=(g1(W[i-2])+W[i-7]+g0(W[i-15])+W[i-16])|0;
+    let a=h0,b=h1,c=h2,d=h3,e=h4,f=h5,g=h6,h=h7;
+    for(let i=0;i<64;i++){
+      const t1=(h+s1(e)+ch(e,f,g)+K[i]+W[i])|0;
+      const t2=(s0(a)+maj(a,b,c))|0;
+     
+      g=f;f=e;e=(d+t1)|0;d=c;c=b;b=a;a=(t1+t2)|0;
     }
-    for (let i = 16; i < 64; i++) {
-      W[i] = (gamma1(W[i-2]) + W[i-7] + gamma0(W[i-15]) + W[i-16]) | 0;
+    h0=(h0+a)|0;h1=(h1+b)|0;h2=(h2+c)|0;h3=(h3+d)|0;
+    h4=(h4+e)|0;h5=(h5+f)|0;h6=(h6+g)|0;h7=(h7+h)|0;
+  }
+  const r=new Uint8Array(32);const rv=new DataView(r.buffer);
+  rv.setUint32(0,h0,false);rv.setUint32(4,h1,false);rv.setUint32(8,h2,false);rv.setUint32(12,h3,false);
+  rv.setUint32(16,h4,false);rv.setUint32(20,h5,false);rv.setUint32(24,h6,false);rv.setUint32(28,h7,false);
+  return r;
+}
+
+/* ===================== ENCRYPT/DECRYPT ===================== */
+const MAP=['A','T','G','C'];
+const MAP_REV={'A':0,'T':1,'G':2,'C':3};
+
+function bytesToBits(b){let s='';for(let i=0;i<b.length;i++)s+=b[i].toString(2).padStart(8,'0');return s;}
+function bitsToBytes(bits){const b=new Uint8Array(Math.floor(bits.length/8));for(let i=0;i<b.length;i++)b[i]=parseInt(bits.substr(i*8,8),2);return b;}
+function bitsToDNA(bits){let d='';for(let i=0;i<bits.length;i+=2)d+=MAP[parseInt(bits.substr(i,2),2)];return d;}
+function dnaToBits(d){let b='';const c=d.toUpperCase().replace(/[^ATGC]/g,'');for(let i=0;i<c.length;i++)b+=MAP_REV[c[i]].toString(2).padStart(2,'0');return b;}
+
+function xorWithKey(bytes,key){
+  if(!key)return bytes;
+  const kb=new TextEncoder().encode(key);
+  const kh=sha256Bytes(kb);
+  const out=new Uint8Array(bytes.length);
+  let ctr=0,pos=0,stream=kh;
+  for(let i=0;i<bytes.length;i++){
+    if(pos>=stream.length){
+      const inp=new Uint8Array(kh.length+4);inp.set(kh);
+      inp.set([(ctr>>>24)&0xff,(ctr>>>16)&0xff,(ctr>>>8)&0xff,ctr&0xff],kh.length);
+      stream=sha256Bytes(inp);ctr++;pos=0;
     }
-    let a = H0, b = H1, c = H2, d = H3;
-    let e = H4, f = H5, g = H6, h = H7;
-    for (let i = 0; i < 64; i++) {
-      const t1 = (h + sigma1(e) + ch(e, f, g) + K[i] + W[i]) | 0;
-      const t2 = (sigma0(a) + maj(a, b, c)) | 0;
-      h = g; g = f; f = e;
-      e = (d + t1) | 0;
-      d = c; c = b; b = a;
-      a = (t1 + t2) | 0;
-    }
-    H0 = (H0 + a) | 0; H1 = (H1 + b) | 0; H2 = (H2 + c) | 0; H3 = (H3 + d) | 0;
-    H4 = (H4 + e) | 0; H5 = (H5 + f) | 0; H6 = (H6 + g) | 0; H7 = (H7 + h) | 0;
-  }
-
-  const result = new Uint8Array(32);
-  const rv = new DataView(result.buffer);
-  rv.setUint32(0, H0, false); rv.setUint32(4, H1, false);
-  rv.setUint32(8, H2, false); rv.setUint32(12, H3, false);
-  rv.setUint32(16, H4, false); rv.setUint32(20, H5, false);
-  rv.setUint32(24, H6, false); rv.setUint32(28, H7, false);
-  return result;
-}
-
-const MAP = ['A', 'T', 'G', 'C'];
-const MAP_REV = { 'A': 0, 'T': 1, 'G': 2, 'C': 3 };
-
-function textToBytes(text) { return new TextEncoder().encode(text); }
-function bytesToText(bytes) { return new TextDecoder().decode(bytes); }
-
-function bytesToBits(bytes) {
-  let s = '';
-  for (let i = 0; i < bytes.length; i++) {
-    s += bytes[i].toString(2).padStart(8, '0');
-  }
-  return s;
-}
-
-function bitsToBytes(bits) {
-  const bytes = new Uint8Array(Math.floor(bits.length / 8));
-  for (let i = 0; i < bytes.length; i++) {
-    bytes[i] = parseInt(bits.substr(i * 8, 8), 2);
-  }
-  return bytes;
-}
-
-function bitsToDNA(bits) {
-  let dna = '';
-  for (let i = 0; i + 1 < bits.length; i += 2) {
-    dna += MAP[parseInt(bits.substr(i, 2), 2)];
-  }
-  return dna;
-}
-
-function dnaToBits(dna) {
-  let bits = '';
-  const clean = dna.toUpperCase().replace(/[^ATGC]/g, '');
-  for (let i = 0; i < clean.length; i++) {
-    bits += MAP_REV[clean[i]].toString(2).padStart(2, '0');
-  }
-  return bits;
-}
-
-function xorWithKey(bytes, key) {
-  if (!key) return bytes;
-  const keyBytes = new TextEncoder().encode(key);
-  const keyHash = sha256Bytes(keyBytes);
-  const out = new Uint8Array(bytes.length);
-  let counter = 0;
-  let streamPos = 0;
-  let currentStream = keyHash;
-
-  for (let i = 0; i < bytes.length; i++) {
-    if (streamPos >= currentStream.length) {
-      const input = new Uint8Array(keyHash.length + 4);
-      input.set(keyHash);
-      input.set([
-        (counter >>> 24) & 0xff,
-        (counter >>> 16) & 0xff,
-        (counter >>> 8) & 0xff,
-        counter & 0xff
-      ], keyHash.length);
-      currentStream = sha256Bytes(input);
-      counter++;
-      streamPos = 0;
-    }
-    out[i] = bytes[i] ^ currentStream[streamPos];
-    streamPos++;
+    out[i]=bytes[i]^stream[pos];pos++;
   }
   return out;
 }
 
-function encrypt(text, key) {
-  const bytes = textToBytes(text);
-  const xored = xorWithKey(bytes, key);
-  const bits = bytesToBits(xored);
-  const lenBits = xored.length.toString(2).padStart(16, '0');
-  return bitsToDNA(lenBits + bits);
+function encrypt(text,key){
+  const b=xorWithKey(new TextEncoder().encode(text),key);
+  const bits=bytesToBits(b);
+  return bitsToDNA(b.length.toString(2).padStart(16,'0')+bits);
 }
 
-function decrypt(dna, key) {
-  const clean = dna.toUpperCase().replace(/[^ATGC]/g, '');
-  if (clean.length === 0) throw new Error(t('err.invalidDNA'));
-  const bits = dnaToBits(dna);
-  if (bits.length < 16) throw new Error(t('err.shortSeq'));
-  const lenBits = bits.substr(0, 16);
-  const len = parseInt(lenBits, 2);
-  const dataBits = bits.substr(16, len * 8);
-  if (dataBits.length < len * 8) throw new Error(t('err.incompleteSeq'));
-  let bytes = bitsToBytes(dataBits);
-  bytes = xorWithKey(bytes, key);
-  return bytesToText(bytes);
+function decrypt(dna,key){
+  const bits=dnaToBits(dna);
+  if(bits.length<16)throw new Error(t('err.shortSeq'));
+  const len=parseInt(bits.substr(0,16),2);
+  const data=bits.substr(16,len*8);
+  if(data.length<len*8)throw new Error(t('err.incompleteSeq'));
+  return new TextDecoder().decode(xorWithKey(bitsToBytes(data),key));
 }
 
-function toast(msg, err = false) {
-  const el = document.getElementById('toast');
-  if (!el) return;
-  el.textContent = msg;
-  el.classList.toggle('err', err);
-  el.classList.add('show');
-  clearTimeout(el._timer);
-  el._timer = setTimeout(() => el.classList.remove('show'), 2500);
+/* ===================== UI ===================== */
+function toast(msg,err=false){
+  const el=document.getElementById('toast');
+  el.textContent=msg;el.classList.toggle('err',err);el.classList.add('show');
+  clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('show'),2500);
 }
 
-function updateStats(inText, outText) {
-  const bytesEl = document.getElementById('stat-bytes');
-  const nucEl = document.getElementById('stat-nuc');
-  const ratioEl = document.getElementById('stat-ratio');
-  if (!bytesEl || !nucEl || !ratioEl) return;
-  bytesEl.textContent = new TextEncoder().encode(inText).length;
-  nucEl.textContent = (outText.match(/[ATGC]/gi) || []).length;
-  const ratio = outText.length / (inText.length || 1);
-  ratioEl.textContent = ratio.toFixed(2) + 'x';
+function updateStats(in_,out){
+  document.getElementById('stat-bytes').textContent=new TextEncoder().encode(in_).length;
+  document.getElementById('stat-nuc').textContent=(out.match(/[ATGC]/gi)||[]).length;
+  document.getElementById('stat-ratio').textContent=(out.length/(in_.length||1)).toFixed(2)+'x';
 }
 
-function handleRun() {
-  const input = document.getElementById('input');
-  const key = document.getElementById('key');
-  const output = document.getElementById('output');
-  const runBtn = document.getElementById('run');
-  if (!input || !output) return;
-
-  const inText = input.value;
-  const keyText = key ? key.value : '';
-
-  if (!inText.trim()) {
-    toast(t('toast.emptyInput'), true);
-    return;
-  }
-
-  if (runBtn) {
-    runBtn.disabled = true;
-    runBtn.textContent = '...';
-  }
-
-  setTimeout(() => {
-    try {
-      let out;
-      if (currentMode === 'encrypt') {
-        out = encrypt(inText, keyText);
-        toast(t('toast.encrypted'));
-      } else {
-        out = decrypt(inText, keyText);
-        toast(t('toast.decrypted'));
-      }
-      output.value = out;
-      updateStats(inText, out);
-    } catch (e) {
-      console.error('Error en encriptación:', e);
-      toast(t('toast.error') + (e.message || 'Unknown error'), true);
-    } finally {
-      if (runBtn) {
-        runBtn.disabled = false;
-        runBtn.textContent = t('app.execute');
-      }
+function handleRun(){
+  const inp=document.getElementById('input');
+  const key=document.getElementById('key').value;
+  const out=document.getElementById('output');
+  const btn=document.getElementById('run');
+  if(!inp.value.trim()){toast(t('toast.emptyInput'),true);return;}
+  btn.disabled=true;btn.textContent='...';
+  setTimeout(()=>{
+    try{
+      const r=currentMode==='encrypt'?encrypt(inp.value,key):decrypt(inp.value,key);
+      out.value=r;updateStats(inp.value,r);
+      toast(t(currentMode==='encrypt'?'toast.encrypted':'toast.decrypted'));
+    }catch(e){
+      toast(t('toast.error')+e.message,true);
     }
-  }, 10);
+    btn.disabled=false;btn.textContent=t('app.execute');
+  },10);
 }
 
-document.addEventListener('DOMContentLoaded', function() {
+/* ===================== INIT ===================== */
+document.addEventListener('DOMContentLoaded',()=>{
   applyLanguage(detectLanguage());
-
-  document.querySelectorAll('.lang-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-      applyLanguage(this.dataset.lang);
-    });
+  document.querySelectorAll('.lang-btn').forEach(b=>{
+    b.addEventListener('click',()=>applyLanguage(b.dataset.lang));
   });
-
-  const modeEnc = document.getElementById('mode-enc');
-  const modeDec = document.getElementById('mode-dec');
-  if (modeEnc) {
-    modeEnc.addEventListener('click', function() {
-      currentMode = 'encrypt';
-      modeEnc.classList.add('active');
-      modeDec.classList.remove('active');
-      updateInputPlaceholder();
-    });
-  }
-  if (modeDec) {
-    modeDec.addEventListener('click', function() {
-      currentMode = 'decrypt';
-      modeDec.classList.add('active');
-      modeEnc.classList.remove('active');
-      updateInputPlaceholder();
-    });
-  }
-
-  const runBtn = document.getElementById('run');
-  if (runBtn) runBtn.addEventListener('click', handleRun);
-
-  const copyBtn = document.getElementById('copy');
-  if (copyBtn) {
-    copyBtn.addEventListener('click', function() {
-      const output = document.getElementById('output');
-      if (!output || !output.value) {
-        toast(t('toast.nothingToCopy'), true);
-        return;
-      }
-      try {
-        navigator.clipboard.writeText(output.value).then(() => {
-          toast(t('toast.copied'));
-        }).catch(() => {
-          output.select();
-          document.execCommand('copy');
-          toast(t('toast.copied'));
-        });
-      } catch (e) {
-        toast(t('toast.error') + 'clipboard', true);
-      }
-    });
-  }
-
-  const clearBtn = document.getElementById('clear');
-  if (clearBtn) {
-    clearBtn.addEventListener('click', function() {
-      const input = document.getElementById('input');
-      const output = document.getElementById('output');
-      if (input) input.value = '';
-      if (output) output.value = '';
-      document.getElementById('stat-bytes').textContent = '0';
-      document.getElementById('stat-nuc').textContent = '0';
-      document.getElementById('stat-ratio').textContent = '0x';
-    });
-  }
-
-  const input = document.getElementById('input');
-  if (input) {
-    input.addEventListener('keydown', function(e) {
-      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') handleRun();
-    });
-  }
-
-  initVisitorCounter();
-
-  console.log('%c PARANOIDCRYPTO %c v1.0 // DNA ENCRYPTION READY',
-    'background:#00e5ff;color:#000;padding:4px 8px;font-weight:bold',
-    'color:#00e5ff');
+  const me=document.getElementById('mode-enc'),md=document.getElementById('mode-dec');
+  me.addEventListener('click',()=>{currentMode='encrypt';me.classList.add('active');md.classList.remove('active');updateInputPlaceholder();});
+  md.addEventListener('click',()=>{currentMode='decrypt';md.classList.add('active');me.classList.remove('active');updateInputPlaceholder();});
+  document.getElementById('run').addEventListener('click',handleRun);
+  document.getElementById('copy').addEventListener('click',()=>{
+    const v=document.getElementById('output').value;
+    if(!v){toast(t('toast.nothingToCopy'),true);return;}
+    navigator.clipboard.writeText(v).then(()=>toast(t('toast.copied'))).catch(()=>toast(t('toast.error')+'clipboard',true));
+  });
+  document.getElementById('clear').addEventListener('click',()=>{
+    document.getElementById('input').value='';
+    document.getElementById('output').value='';
+    document.getElementById('stat-bytes').textContent='0';
+    document.getElementById('stat-nuc').textContent='0';
+    document.getElementById('stat-ratio').textContent='0x';
+  });
+  document.getElementById('input').addEventListener('keydown',e=>{
+    if((e.ctrlKey||e.metaKey)&&e.key==='Enter')handleRun();
+  });
+  initCounter();
+  console.log('PARANOIDCRYPTO v1.0 READY');
 });
 </script>
 </body>
