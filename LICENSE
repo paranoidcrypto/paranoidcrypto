@@ -1,0 +1,177 @@
+================================================================================
+PARANOIDCRYPTO - LICENSE
+================================================================================
+
+Copyright (c) 2026 Paris Lavin
+ORCID: https://orcid.org/0000-0002-8893-526X
+Website: https://www.paranoidcrypto.cl
+
+This project is dual-licensed. Different components are governed by different
+licenses as described below.
+
+================================================================================
+PART 1: SOURCE CODE - MIT LICENSE
+================================================================================
+
+The source code of this project (HTML, CSS, JavaScript, and related software
+components) is licensed under the MIT License.
+
+MIT License
+
+Copyright (c) 2026 Paris Lavin
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+================================================================================
+PART 2: DATASET, DOCUMENTATION AND CONTENT - CC-BY 4.0
+================================================================================
+
+The dataset, documentation, textual content, conceptual framework, algorithm
+descriptions, and any non-code intellectual content of this project are
+licensed under the Creative Commons Attribution 4.0 International License
+(CC-BY 4.0).
+
+You are free to:
+
+  Share — copy and redistribute the material in any medium or format
+  Adapt — remix, transform, and build upon the material for any purpose,
+          even commercially.
+
+Under the following terms:
+
+  Attribution — You MUST give appropriate credit to the original author(s),
+                provide a link to the license, and indicate if changes were
+                made. You may do so in any reasonable manner, but not in any
+                way that suggests the licensor endorses you or your use.
+
+  No additional restrictions — You may not apply legal terms or technological
+                               measures that legally restrict others from
+                               doing anything the license permits.
+
+REQUIRED ATTRIBUTION FORMAT
+================================================================================
+
+When using, citing, or redistributing any part of this project (code, dataset,
+documentation, or content), you MUST include the following attribution:
+
+  "ParanoidCrypto" by Paris Lavin (ORCID: 0000-0002-8893-526X)
+  Available at: https://www.paranoidcrypto.cl
+  Licensed under MIT License (code) and CC-BY 4.0 (dataset/content)
+
+For academic citations, please use:
+
+  Lavin, P. (2026). ParanoidCrypto: DNA-based text encryption.
+  https://www.paranoidcrypto.cl
+  ORCID: https://orcid.org/0000-0002-8893-526X
+
+Or in BibTeX format:
+
+  @misc{lavin2026paranoidcrypto,
+    author       = {Lavin, Paris},
+    title        = {ParanoidCrypto: DNA-based text encryption},
+    year         = {2026},
+    url          = {https://www.paranoidcrypto.cl},
+    note         = {ORCID: 0000-0002-8893-526X}
+  }
+
+================================================================================
+PART 3: TECHNICAL ATTRIBUTIONS
+================================================================================
+
+This project implements established cryptographic and bioinformatics techniques.
+The algorithms themselves are not original inventions but rather implementations
+of well-known standards and methods. Proper attribution is provided below:
+
+### SHA-256 Implementation
+- Standard: FIPS 180-4 (Secure Hash Standard)
+- Original authors: National Security Agency (NSA) and National Institute of
+  Standards and Technology (NIST), United States Government
+- Status: Public domain (U.S. government work)
+- Reference: https://csrc.nist.gov/publications/detail/fips/180/4/final
+- Note: This project uses a pure JavaScript implementation of the SHA-256
+  algorithm as defined in the FIPS 180-4 standard.
+
+### XOR Cipher with SHA-256-derived Keystream
+- Technique: Symmetric stream cipher using XOR operation
+- Origin: Fundamental cryptographic operation, no specific author
+- Status: Public domain (mathematical concept)
+- Note: The XOR cipher is one of the oldest and simplest encryption methods,
+  dating back to early cryptography. This project uses it in combination with
+  a SHA-256-derived keystream for enhanced security.
+
+### Key Derivation (SHA-256 + Counter Mode)
+- Technique: Counter mode (CTR) key derivation
+- Origin: Standard cryptographic technique used in AES-CTR and similar ciphers
+- Status: Public domain (established cryptographic method)
+- Reference: NIST SP 800-38A (Recommendation for Block Cipher Modes of Operation)
+- Note: This project implements a simplified counter mode using SHA-256 to
+  generate a pseudo-random keystream from a user-provided key.
+
+### DNA Encoding (2-bit to Nucleotide Mapping)
+- Technique: Binary to nucleotide base mapping (00→A, 01→T, 10→G, 11→C)
+- Origin: Established technique in bioinformatics and DNA data storage research
+- Status: Scientific knowledge (no single author)
+- Key references in the field:
+  * Church, G.M., Gao, Y., & Kosuri, S. (2012). Next-generation digital
+    information storage in DNA. Science, 337(6102), 1628.
+  * Goldman, N., et al. (2013). Towards practical, high-capacity, low-maintenance
+    information storage in synthesized DNA. Nature, 494(7435), 77-80.
+  * Yazdi, S.M.H.T., et al. (2015). A rewritable, random-access DNA-based
+    storage system. Scientific Reports, 5, 14138.
+- Note: The 2-bit to nucleotide mapping is a standard encoding scheme widely
+  used in DNA data storage research. This project applies it to text encryption.
+
+### Conceptual Framework
+The combination of DNA encoding with cryptographic techniques for text
+encryption represents an original compilation and implementation by the author
+(Paris Lavin). While the individual components are established techniques,
+their specific integration into this application is original work.
+
+================================================================================
+ACKNOWLEDGMENTS
+================================================================================
+
+The author acknowledges the contributions of:
+- The cryptographic research community for developing and standardizing the
+  algorithms used in this project
+- The bioinformatics community for establishing DNA encoding techniques
+- The open-source community for providing tools and libraries (Firebase, fonts)
+- All researchers cited above whose work made this project possible
+
+NOTICES
+================================================================================
+
+1. This project uses third-party components under their respective licenses:
+   - Firebase SDK (Google Inc.) - Apache License 2.0
+   - JetBrains Mono font - SIL Open Font License 1.1
+   - Fira Code font - SIL Open Font License 1.1
+   - Source Code Pro font (Adobe) - SIL Open Font License 1.1
+   - SHA-256 implementation based on FIPS 180-4 (public domain)
+   - ORCID iD icon - CC0 1.0 Universal
+
+2. The MIT license applies ONLY to the source code.
+3. The CC-BY 4.0 license applies to the dataset, documentation, conceptual
+   framework, algorithm descriptions, and all non-code content.
+4. Attribution to the original author is MANDATORY in all uses.
+
+Full license texts available at:
+- MIT: https://opensource.org/licenses/MIT
+- CC-BY 4.0: https://creativecommons.org/licenses/by/4.0/
+
+================================================================================
