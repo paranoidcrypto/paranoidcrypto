@@ -1,6 +1,6 @@
 # Security Policy / Política de Seguridad
 
-**ParanoidCrypto** · DNA-based text encryption  
+**ParanoidCrypto v2.0** · DNA-based text encryption  
 Author: Paris Lavin · ORCID: [0000-0002-8893-526X](https://orcid.org/0000-0002-8893-526X)  
 Website: [https://www.paranoidcrypto.cl](https://www.paranoidcrypto.cl)
 
@@ -21,8 +21,8 @@ Website: [https://www.paranoidcrypto.cl](https://www.paranoidcrypto.cl)
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 1.0.x   | ✅ Supported       |
-| < 1.0   | ❌ Not supported   |
+| 2.0.x   | ✅ Supported       |
+| < 2.0   | ❌ Not supported   |
 
 ### Reporting a Vulnerability
 
@@ -60,10 +60,24 @@ ParanoidCrypto is designed with privacy as a core principle:
 
 | Component | Implementation | Notes |
 |-----------|----------------|-------|
+| BWT+MTF | Burrows-Wheeler Transform + Move-to-Front | Pattern hiding and compression |
 | SHA-256 | Pure JavaScript | Based on FIPS 180-4 standard |
 | XOR Cipher | Symmetric stream cipher | Uses SHA-256-derived keystream |
 | Key derivation | SHA-256 + counter mode | Generates pseudo-random stream |
-| DNA encoding | 2-bit to nucleotide mapping | `00→A`, `01→T`, `10→G`, `11→C` |
+| DNA encoding | 2-bit to nucleotide mapping | 24 dictionary permutations |
+
+#### Nucleotide Dictionaries
+
+The application supports 24 different nucleotide mapping dictionaries:
+
+| # | Mapping | Binary Pattern |
+|---|---------|----------------|
+| 1 | A T G C | 00→A, 01→T, 10→G, 11→C |
+| 2 | A T C G | 00→A, 01→T, 10→C, 11→G |
+| ... | ... | ... |
+| 24 | C G T A | 00→C, 01→G, 10→T, 11→A |
+
+All 24 permutations are available for selection during encryption/decryption.
 
 #### Firebase Integration
 
