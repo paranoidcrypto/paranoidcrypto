@@ -4,10 +4,11 @@
 
 **DNA-based text encryption web application**
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-00e5ff?style=flat-square)](LICENSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-ff2a2a?style=flat-square)](LICENSE)
 [![Firebase](https://img.shields.io/badge/Firebase-Realtime_Database-FFCA28?style=flat-square&logo=firebase)](https://firebase.google.com)
 [![ORCID](https://img.shields.io/badge/ORCID-0000--0002--8893--526X-A6CE39?style=flat-square&logo=orcid)](https://orcid.org/0000-0002-8893-526X)
 [![GitHub](https://img.shields.io/badge/GitHub-paranoidcrypto-181717?style=flat-square&logo=github)](https://github.com/paranoidcrypto)
+[![Version](https://img.shields.io/badge/Version-2.0-ff2a2a?style=flat-square)](https://github.com/paranoidcrypto/paranoidcrypto/releases)
 
 ![ParanoidCrypto Logo](paranoid.gif)
 
@@ -20,7 +21,7 @@
 | Language | Link |
 |----------|------|
 | 🇪🇸 **Español** | [Ir a la sección en español](#español) |
-| 🇬🇧 **English** | [Go to English section](#english) |
+| 🇬 **English** | [Go to English section](#english) |
 | 🇧🇷 **Português** | [Ir para a seção em português](#portugues) |
 
 ---
@@ -28,27 +29,61 @@
 <a id="español"></a>
 ## 🇪🇸 Español
 
-**ParanoidCrypto** es una aplicación web que transforma texto plano en secuencias de ADN (A, T, G, C) utilizando técnicas de codificación genética y cifrado XOR con SHA-256. Todo el procesamiento ocurre en el navegador del usuario — tus datos nunca tocan un servidor.
+**ParanoidCrypto v2.0** es una aplicación web que transforma texto plano en secuencias de ADN (A, T, G, C) utilizando técnicas de codificación genética, compresión BWT+MTF y cifrado XOR con SHA-256. Todo el procesamiento ocurre en el navegador del usuario — tus datos nunca tocan un servidor.
 
 ### 🌟 Características
 
 - 🔐 **Encriptación 100% client-side**: Tus datos nunca salen de tu navegador
 - 🧬 **Codificación DNA**: Convierte texto en secuencias de nucleótidos (A, T, G, C)
+- 🗜️ **Compresión BWT+MTF**: Transformación Burrows-Wheeler + Move-to-Front para ocultar patrones y reducir tamaño
 - 🔑 **Cifrado XOR + SHA-256**: Protección adicional con clave secreta
+-  **24 diccionarios de mapeo**: Selección de permutaciones de nucleótidos para mayor seguridad
 - 🌍 **Multilingüe**: Español, Inglés y Portugués
 - 📱 **Responsive**: Funciona en móvil, tablet y desktop
-- 👁️ **Contador de visitas**: Estadísticas en tiempo real con Firebase
-- 🎨 **Diseño cyberpunk**: Interfaz oscura con acentos en azul cian
+- ️ **Contador de visitas**: Estadísticas en tiempo real con Firebase
+- 🎨 **Diseño cyberpunk rojo**: Interfaz oscura con acentos en rojo neón
 
 ### 🚀 Cómo usar
 
 1. Abre `index.html` en tu navegador
 2. Escribe tu mensaje secreto en el campo **INPUT**
-3. (Opcional) Ingresa una clave secreta para mayor seguridad
-4. Haz clic en **ENCRYPT** (o **EJECUTAR**) para encriptar
-5. Copia la secuencia de ADN resultante
-6. Para desencriptar, cambia a modo **DECRYPT**, pega la secuencia y usa la misma clave
+3. Selecciona el diccionario de nucleótidos (1-24)
+4. (Opcional) Ingresa una clave secreta para mayor seguridad
+5. Haz clic en **ENCRYPT** (o **EJECUTAR**) para encriptar
+6. Copia la secuencia de ADN resultante
+7. Para desencriptar, cambia a modo **DECRYPT**, pega la secuencia, selecciona el mismo diccionario y usa la misma clave
 
+### 🔒 Seguridad
+
+- **BWT+MTF**: Compresión que oculta patrones del texto original
+- **SHA-256**: Implementación en JavaScript puro (sin dependencias externas)
+- **XOR Cipher**: Cifrado simétrico con stream generado por SHA-256
+- **24 diccionarios**: Múltiples esquemas de mapeo de bits a nucleótidos
+- **Zero-knowledge**: El servidor nunca ve tus datos ni claves
+- **Sin backend**: Todo ocurre en el navegador del usuario
+
+> ️ **Advertencia**: No usar para datos críticos sin capas adicionales de seguridad.
+
+### 🛠️ Tecnologías
+
+- HTML5, CSS3, JavaScript (ES6+)
+- **Firebase Realtime Database** (contador de visitas)
+- **Web Crypto API** (SHA-256)
+- **Google Fonts**: JetBrains Mono, Fira Code, Source Code Pro, Noto Sans SC
+
+### 📦 Instalación local
+
+```bash
+# Clonar el repositorio
+git clone https://github.com/paranoidcrypto/paranoidcrypto.git
+
+# Entrar al directorio
+cd paranoidcrypto
+
+# Abrir en tu navegador
+open index.html       # macOS
+start index.html      # Windows
+xdg-open index.html   # Linux
 ### 🔒 Seguridad
 
 - **SHA-256**: Implementación en JavaScript puro (sin dependencias externas)
