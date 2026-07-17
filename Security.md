@@ -112,8 +112,102 @@ For production use, configure these rules in your Firebase Realtime Database:
 ```
 
 ---
+<a name="espanol"></a>
+## 🇪🇸 Español
 
-### 📄 Bloque 2: Português
+### Versiones Soportadas
+
+| Versión | Soportada          |
+| ------- | ------------------ |
+| 2.0.x   | ✅ Soportada       |
+| < 2.0   | ❌ No soportada    |
+
+### Reportar una Vulnerabilidad
+
+Si descubres una vulnerabilidad de seguridad en ParanoidCrypto, por favor ayúdanos reportándola de manera responsable.
+
+**NO abras un issue público** para vulnerabilidades de seguridad.
+
+#### Cómo reportar
+
+1. **Email**: Contacta al autor vía ORCID: [0000-0002-8893-526X](https://orcid.org/0000-0002-8893-526X)
+2. **Incluye**:
+   - Descripción de la vulnerabilidad
+   - Pasos para reproducirla
+   - Impacto potencial
+   - Solución sugerida (si la tienes)
+3. **Tiempo de respuesta esperado**: 48-72 horas
+4. **Qué esperar**:
+   - Confirmación de recepción de tu reporte
+   - Actualizaciones regulares del progreso
+   - Crédito en el aviso de seguridad (a menos que prefieras permanecer en el anonimato)
+
+### Arquitectura de Seguridad
+
+#### Procesamiento del Lado del Cliente
+
+ParanoidCrypto está diseñado con la privacidad como principio fundamental:
+
+- ✅ **Toda la encriptación/desencriptación ocurre en el navegador del usuario**
+- ✅ **No se envían datos a servidores externos** (excepto el contador de visitas)
+- ✅ **Sin procesamiento backend** del contenido del usuario
+- ✅ **Las claves secretas nunca salen del dispositivo del usuario**
+- ✅ **Sin cookies ni rastreo** de la actividad del usuario
+
+#### Implementación Criptográfica
+
+| Componente         | Implementación                        | Notas                                |
+| ------------------ | ------------------------------------- | ------------------------------------ |
+| BWT+MTF            | Transformada de Burrows-Wheeler + Move-to-Front | Ocultamiento de patrones y compresión |
+| SHA-256            | JavaScript puro                       | Basado en el estándar FIPS 180-4     |
+| Cifrado XOR        | Cifrado de flujo simétrico            | Usa flujo derivado de SHA-256        |
+| Derivación de clave| SHA-256 + modo contador               | Genera un flujo pseudoaleatorio      |
+| Codificación de ADN| Mapeo de 2 bits a nucleótidos         | 24 permutaciones de diccionario      |
+
+#### Diccionarios de Nucleótidos
+
+La aplicación soporta 24 diccionarios de mapeo de nucleótidos diferentes:
+
+| #  | Mapeo   | Patrón Binario             |
+| -- | ------- | -------------------------- |
+| 1  | A T G C | 00→A, 01→T, 10→G, 11→C     |
+| 2  | A T C G | 00→A, 01→T, 10→C, 11→G     |
+|... | ...     | ...                        |
+| 24 | C G T A | 00→C, 01→G, 10→T, 11→A     |
+
+Las 24 permutaciones están disponibles para su selección durante la encriptación/desencriptación.
+
+#### Integración con Firebase
+
+El contador de visitas utiliza Firebase Realtime Database:
+
+- Solo almacena conteos de visitas anónimas e IDs de visitantes
+- No se recopilan datos personales
+- Los IDs de visitantes se generan aleatoriamente y se almacenan localmente
+- Las reglas deben configurarse correctamente (ver abajo)
+
+### Reglas de Seguridad de Firebase
+
+Para uso en producción, configura estas reglas en tu Firebase Realtime Database:
+
+```json
+{
+  "rules": {
+    "site_stats": {
+      "total_visits": {
+        ".read": true,
+        ".write": true
+      },
+      "visitors": {
+        "$visitor_id": {
+          ".read": true,
+          ".write": true
+        }
+      }
+    }
+  }
+}
+```
 
 <a name="portugues"></a>
 ## 🇧🇷 Português
