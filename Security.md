@@ -286,3 +286,21 @@ O contador de visitas utiliza o Firebase Realtime Database:
 ### Regras de Segurança do Firebase
 
 Para uso em produção, configure estas regras no seu Firebase Realtime Database:
+```json
+{
+  "rules": {
+    "site_stats": {
+      "total_visits": {
+        ".read": true,
+        ".write": true
+      },
+      "visitors": {
+        "$visitor_id": {
+          ".read": true,
+          ".write": true
+        }
+      }
+    }
+  }
+}
+```
