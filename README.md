@@ -10,7 +10,7 @@
 [![GitHub](https://img.shields.io/badge/GitHub-paranoidcrypto-181717?style=flat-square&logo=github)](https://github.com/paranoidcrypto)
 [![Version](https://img.shields.io/badge/Version-2.0-ff2a2a?style=flat-square)](https://github.com/paranoidcrypto/paranoidcrypto/releases)
 
-![ParanoidCrypto Logo](paranoid.gif)
+![ParanoidCrypto Logo](paranoidRED_.gif)
 
 </div>
 
