@@ -10,7 +10,7 @@ Website: [https://www.paranoidcrypto.cl](https://www.paranoidcrypto.cl)
 
 - [English](#english)
 - [Español](#español)
-- [Português](#português)
+- [Português](#portugues)
 
 ---
 
