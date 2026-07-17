@@ -109,3 +109,4 @@ For production use, configure these rules in your Firebase Realtime Database:
     }
   }
 }
+```
